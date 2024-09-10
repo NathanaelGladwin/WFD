@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FirstController;
 use App\Http\Controllers\HomeController;
+use App\Models\Course;
 
 Route::get('/', function () {
     return view('home');
@@ -51,6 +52,10 @@ Route::get('/tail', function(){
     return view('tail');
 });
 
-Route::get('/home', function(){
-    return view('home');
+Route::get('/courses', function(){
+    return view('courses', ['courses'=>Course::all()]);
+});
+
+Route::get('/course/{course:course_id}', function(Course $course){
+    return view('course', ['course'=>$course]);
 });
