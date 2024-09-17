@@ -12,17 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('courses', function (Blueprint $table) {
-            $table->id('course_id')->autoIncrement();
-            $table->string('course_code')->unique();
+            $table->id();
+            $table->string('course_code',6)->unique();
             $table->year('curriculum_year');
             $table->string('course_name');
-            $table->boolean('course_active_status')->default(true);
+            $table->string('course_name_en');
+            $table->tinyInteger('credit_unit');
+            $table->unsignedBigInteger('unit_id');
+            $table->foreign('unit_id')->references('id')->on('units')->onDelete('cascade');
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
-
-            $table->unsignedBigInteger('created_by');
-            $table->foreign('created_by')->references('id')->on('users');
-            
-            $table->ipAddress('ip_address');
         });
     }
 

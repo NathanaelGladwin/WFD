@@ -12,16 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('students', function (Blueprint $table) {
-            $table->id('student_id')->autoIncrement();
-            $table->string('nrp',9)->unique();
+            $table->id();
+            $table->string('NRP',9)->unique();
             $table->string('name');
             $table->date('date_of_birth');
             $table->string('place_of_birth');
             $table->text('address')->nullable();
             $table->string('phone_number');
             $table->boolean('is_active')->default(true);
-            $table->foreignId('unit_id');
+            $table->string('NIK',16)->unique();
             $table->timestamps();
+            $table->unsignedBigInteger('unit_id');
+            $table->foreign('unit_id')->references('id')->on('units')->onDelete('cascade');
         });
     }
 
