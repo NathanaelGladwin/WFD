@@ -56,6 +56,6 @@ Route::get('/courses', function(){
     return view('courses', ['courses'=>Course::all()]);
 });
 
-Route::get('/course/{course:course_id}', function(Course $course){
+Route::get('/course/{course:id}', function(Course $course){
     return view('course', ['course'=>$course]);
 });
