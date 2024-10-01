@@ -57,4 +57,12 @@ Route::get('/courses', function(){
     return view('courses', ['courses'=>Course::all()]);
 });
 
-Route::get('/courses/{course:id}', [CourseController::class, 'show']);
+Route::get('/course/create', [CourseController::class, 'create'])->name('course.create');
+
+Route::get('/course/view/{course:id}', [CourseController::class, 'show']);
+
+Route::post('course/insert', [CourseController::class, 'insert'])->name('course.insert');
+
+Route::get('course/edit/{course:id}', [CourseController::class, 'edit'])->name('course.edit');
+
+Route::put('course/update/{course:id}', [CourseController::class, 'update'])->name('course.update');
