@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Middleware\TestMiddleware;
+use App\Http\Middleware\TestMiddleware2;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -11,7 +13,24 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        //Global Middleware
+        // $middleware->append(TestMiddleware::class);
+
+        //Group Middleware
+        // $middleware->web(append:[
+        //     TestMiddleware::class,
+        // ]);
+
+        //Alias Middleware
+        $middleware->alias([
+            'check'=>TestMiddleware::class,
+            'check2'=>TestMiddleware2::class,
+        ]);
+
+        $middleware->priority([
+            TestMiddleware2::class,
+            TestMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
