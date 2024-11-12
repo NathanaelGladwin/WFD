@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CourseController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FirstController;
@@ -53,27 +54,34 @@ Route::get('/tail', function(){
     return view('tail');
 });
 
-Route::get('/courses', function(){
-    return view('courses', ['courses'=>Course::all()]);
-});
-
 // Route::get('/course/create', [CourseController::class, 'create'])->name('course.create');
 
 // Route::get('/course/create', [CourseController::class, 'create'])->name('course.create')->withoutMiddleware('check');
 
 // Route::get('/course/create', [CourseController::class, 'create'])->name('course.create')->middleware('check');
 
-Route::get('/course/view/{course:id}', [CourseController::class, 'show']);
 
-Route::post('course/insert', [CourseController::class, 'insert'])->name('course.insert');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::middleware(['check:manager,subadmin,manager'])->group(function(): void{
-    Route::get('/course/create', [CourseController::class, 'create'])->name('course.create');
-    Route::get('course/edit/{course:id}', [CourseController::class, 'edit'])->name('course.edit');
+Route::middleware(['auth'])->group(function(): void{
+
+    Route::middleware(['role:LECTURER,DEAN,STUDENT'])->group(function(){
+        Route::get('/courses', function(){
+        return view('courses', ['courses'=>Course::all()]);
+        })->name('courses');
+        Route::get('/course/view/{course:id}', [CourseController::class, 'show']);
+    });
+
+    Route::middleware(['role:LECTURER,DEAN'])->group(function(){
+        Route::get('/course/create', [CourseController::class, 'create'])->name('course.create');
+        Route::get('course/edit/{course:id}', [CourseController::class, 'edit'])->name('course.edit');
+        Route::post('course/insert', [CourseController::class, 'insert'])->name('course.insert');
+        Route::put('course/update/{course:id}', [CourseController::class, 'update'])->name('course.update');
+        Route::get('/course/delete/{course:id}', [CourseController::class, 'edit'])->name('course.delete');
+    });
 });
 
 // Route::get('course/edit/{course:id}', [CourseController::class, 'edit'])->name('course.edit');
 
-Route::put('course/update/{course:id}', [CourseController::class, 'update'])->name('course.update');
-
-Route::get('/ticket/delete/{ticket:id}', [CourseController::class, 'edit'])->name('course.edit');
+Route::get('/login', [AuthController::class, 'index'])->name('login')->middleware('guest');
+Route::post('/login_auth', [AuthController::class, 'login_auth'])->name('login_post');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\Unit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class CourseController extends Controller
 {
@@ -37,6 +38,11 @@ class CourseController extends Controller
 
     public function insert(Request $request)
     {
+        //check authorization
+        if(!Gate::allows('insert-course')){
+            abort(403);
+        }
+
         $request->validate([
             'course_code'=>'required|unique:courses|size:6',
             'curriculum_year'=>'required',
@@ -71,6 +77,10 @@ class CourseController extends Controller
 
     public function update(Request $request, Course $course)
     {
+        //check authorization
+        if(!Gate::allows('update-course')){
+            abort(403);
+        }
         $request->validate([
             'course_code'=>'required|unique:courses|size:6',
             'curriculum_year'=>'required',
@@ -109,5 +119,15 @@ class CourseController extends Controller
         // $course->save();
 
         return redirect('/courses')->with('success','Course berhasil diupdate');
+    }
+
+    public function delete(Course $course) {
+        //check authorization
+        if(!Gate::allows('delete-course')){
+            abort(403);
+        }
+
+        $course->delete();
+        return redirect('/courses')->with('success', 'Course deleted successfully!');
     }
 }

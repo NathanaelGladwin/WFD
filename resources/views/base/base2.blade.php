@@ -29,6 +29,12 @@
               <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Features</a>
               <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Marketplace</a>
               <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Company</a>
+              @auth
+                <form action="{{ route('logout') }}" method="POST">
+                  @csrf
+                  <button class="text-sm font-semibold leading-6 text-gray-900">Logout</button>
+                </form>
+              @endauth
             </div>
             <div class="hidden lg:flex lg:flex-1 lg:justify-end">
               <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Log in <span aria-hidden="true">&rarr;</span></a>

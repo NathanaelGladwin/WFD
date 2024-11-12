@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CheckRoleMiddleware;
 use App\Http\Middleware\TestMiddleware;
 use App\Http\Middleware\TestMiddleware2;
 use Illuminate\Foundation\Application;
@@ -25,12 +26,15 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'check'=>TestMiddleware::class,
             'check2'=>TestMiddleware2::class,
+            'role'=>CheckRoleMiddleware::class,
         ]);
 
         $middleware->priority([
             TestMiddleware2::class,
             TestMiddleware::class,
         ]);
+
+        $middleware->redirectGuestsTo('/login');
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
