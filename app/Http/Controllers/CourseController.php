@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\Unit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Response;
 
 class CourseController extends Controller
 {
@@ -129,5 +132,42 @@ class CourseController extends Controller
 
         $course->delete();
         return redirect('/courses')->with('success', 'Course deleted successfully!');
+    }
+
+    public function api_get_courses(Request $request) {
+        //get all field on spesific course id
+        // $data = Course::find($request->id);
+
+        //spesifi: field
+        $data = Course::select(['course_code','course_name'])->find($request->id);
+
+        if(isset($data)) {
+            //jika ada data
+            return Response::json(['data'=>$data], 200);
+        }
+        //jika data tidak ditemukan
+        return Response::json(['message'=>'Course not found'], 404);
+        // abort(404);
+    }
+
+    public function request_api_to_course(Request $request) {
+        $response = Http::get('http://wfd1.test:8080/api/get/courses/'.$request->id);
+        
+        $data = $response->json();
+        $status = $response->status();
+        if(isset($data['data'])) {
+            return Response::json(['data'=>$data['data']],$status);
+        }
+
+        return Response::json(['message'=>$data['message']],$status);
+    }
+
+    public function api_get_token(Request $request){
+        if(Auth::attempt(['email' => 'user@user.com', 'password' => 'user'])){
+            $auth=Auth::user();
+            $data['token']=$auth->createToken('auth_token')->plainTextToken;
+
+            return Response::json(['data'=>$data],200);
+        }
     }
 }

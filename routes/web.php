@@ -81,6 +81,8 @@ Route::middleware(['auth'])->group(function(): void{
     });
 });
 
+Route::get('/request/to/api/course/{id}', [CourseController::class, 'request_api_to_course']);
+
 // Route::get('course/edit/{course:id}', [CourseController::class, 'edit'])->name('course.edit');
 
 Route::get('/login', [AuthController::class, 'index'])->name('login')->middleware('guest');
